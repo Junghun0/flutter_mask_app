@@ -37,27 +37,36 @@ class _MyHomePageState extends State<MyHomePage> {
     final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
     final jsonStores = jsonResult['stores'];
 
-    if (stores.isNotEmpty) {
-      stores.clear();
-    }
-    jsonStores.forEach((e) {
-      stores.add(Store.fromJson(e));
+    setState(() {
+      if (stores.isNotEmpty) {
+        stores.clear();
+      }
+      jsonStores.forEach((e) {
+        stores.add(Store.fromJson(e));
+      });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetch();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('마스크 재고 있는 곳 : 0 곳'),
-      ),
-      body: Center(
-        child: RaisedButton(
-          onPressed: () async {
-            await fetch();
-          },child: Text('fetch'),
+        appBar: AppBar(
+          title: Text('마스크 재고 있는 곳 : 0 곳'),
         ),
-      ),
-    );
+        body: ListView(
+          children: stores.map((e) {
+            return ListTile(
+              title: Text(e.name),
+              subtitle: Text(e.addr),
+              trailing: Text(e.remainStat ?? '매진'),
+            );
+          }).toList(),
+        ));
   }
 }
