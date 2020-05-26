@@ -28,8 +28,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final stores = List<Store>();
+  var isLoading = true;
 
   Future fetch() async {
+    setState(() {
+      isLoading = true;
+    });
+
     var url =
         'https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=37.266389&lng=126.999333&m=1000';
     var response = await http.get(url);
@@ -44,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
       jsonStores.forEach((e) {
         stores.add(Store.fromJson(e));
       });
+      isLoading = false;
     });
   }
 
@@ -57,9 +63,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('마스크 재고 있는 곳 : 0 곳'),
+          title: Text('마스크 재고 있는 곳 : ${stores.length} 곳'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                fetch();
+              },
+            )
+          ],
         ),
-        body: ListView(
+        body: isLoading ? loadingWidget() : ListView(
           children: stores.map((e) {
             return ListTile(
               title: Text(e.name),
@@ -68,5 +82,20 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           }).toList(),
         ));
+  }
+
+  Widget loadingWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text('정보를 가져오는 중', style: TextStyle(fontSize: 15),),
+          ),
+          CircularProgressIndicator(),
+        ],
+      ),
+    );
   }
 }
