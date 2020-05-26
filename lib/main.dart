@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -28,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
         'https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=37.266389&lng=126.999333&m=1000';
     var response = await http.get(url);
     print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    print('Response body: ${jsonDecode(utf8.decode(response.bodyBytes))}');
   }
 
   @override
