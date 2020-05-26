@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -22,12 +23,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Future fetch() async {
+    var url =
+        'https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=37.266389&lng=126.999333&m=1000';
+    var response = await http.get(url);
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mask App'),),
+      appBar: AppBar(
+        title: Text('Mask App'),
+      ),
       body: Center(
-        child: Text('Test'),
+        child: RaisedButton(
+          onPressed: () {
+            fetch();
+          },child: Text('fetch'),
+        ),
       ),
     );
   }
