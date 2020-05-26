@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'model/store.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -25,24 +27,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final stores = List<Store>();
+
   Future fetch() async {
     var url =
         'https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=37.266389&lng=126.999333&m=1000';
     var response = await http.get(url);
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${jsonDecode(utf8.decode(response.bodyBytes))}');
+
+    final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
+    final jsonStores = jsonResult['stores'];
+
+    if (stores.isNotEmpty) {
+      stores.clear();
+    }
+    jsonStores.forEach((e) {
+      stores.add(Store.fromJson(e));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mask App'),
+        title: Text('마스크 재고 있는 곳 : 0 곳'),
       ),
       body: Center(
         child: RaisedButton(
-          onPressed: () {
-            fetch();
+          onPressed: () async {
+            await fetch();
           },child: Text('fetch'),
         ),
       ),
