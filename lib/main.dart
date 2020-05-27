@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maskapp/repository/store_repository.dart';
 
 import 'model/store.dart';
 
@@ -24,13 +25,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var isLoading = true;
+  var stores = List<Store>();
+  var isLoading = false;
 
+  final storeRepository = StoreRepository();
 
   @override
   void initState() {
     super.initState();
-    fetch();
+    storeRepository.fetch().then((fetchStore) {
+      setState(() {
+        stores = fetchStore;
+      });
+    });
   }
 
   @override
@@ -43,7 +50,11 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                fetch();
+                storeRepository.fetch().then((fetchStore) {
+                  setState(() {
+                    stores = fetchStore;
+                  });
+                });
               },
             )
           ],
