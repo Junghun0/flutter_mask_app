@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maskapp/ui/mainpage.dart';
+import 'package:maskapp/ui/view/mainpage.dart';
 import 'package:maskapp/viewmodel/store_model.dart';
 import 'package:provider/provider.dart';
 

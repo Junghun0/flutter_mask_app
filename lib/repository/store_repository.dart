@@ -17,14 +17,13 @@ class StoreRepository {
     final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
     final jsonStores = jsonResult['stores'];
 
-//    setState(() {
-//      if (stores.isNotEmpty) {
-//      }
       jsonStores.forEach((e) {
         stores.add(Store.fromJson(e));
       });
-//      isLoading = false;
-//    });
-  return stores;
+
+  return stores.where((e) =>
+  e.remainStat == 'plenty' ||
+      e.remainStat == 'some' ||
+      e.remainStat == 'few').toList();
   }
 }
