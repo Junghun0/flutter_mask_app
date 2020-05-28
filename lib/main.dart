@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:maskapp/repository/store_repository.dart';
+import 'package:maskapp/viewmodel/store_model.dart';
+import 'package:provider/provider.dart';
 
 import 'model/store.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+  ChangeNotifierProvider.value(value: StoreModel(), child: MyApp())
+);
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -25,36 +28,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var stores = List<Store>();
   var isLoading = false;
-
-  final storeRepository = StoreRepository();
 
   @override
   void initState() {
     super.initState();
-    storeRepository.fetch().then((fetchStore) {
-      setState(() {
-        stores = fetchStore;
-      });
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final storeModel = Provider.of<StoreModel>(context);
+
     return Scaffold(
         appBar: AppBar(
           title: Text(
-              '마스크 재고 있는 곳 : ${stores.where((e) => e.remainStat == 'plenty' || e.remainStat == 'some' || e.remainStat == 'few').length} 곳'),
+              '마스크 재고 있는 곳 : ${storeModel.stores.where((e) => e.remainStat == 'plenty' || e.remainStat == 'some' || e.remainStat == 'few').length} 곳'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                storeRepository.fetch().then((fetchStore) {
-                  setState(() {
-                    stores = fetchStore;
-                  });
-                });
+                storeModel.fetch();
               },
             )
           ],
@@ -62,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: isLoading
             ? loadingWidget()
             : ListView(
-                children: stores
+                children: storeModel.stores
                     .where((e) =>
                         e.remainStat == 'plenty' ||
                         e.remainStat == 'some' ||
