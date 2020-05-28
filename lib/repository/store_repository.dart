@@ -4,14 +4,11 @@ import 'package:maskapp/model/store.dart';
 
 class StoreRepository {
 
-  Future<List<Store>> fetch() async {
+  Future<List<Store>> fetch(double lat, double lng) async {
     final stores = List<Store>();
-//    setState(() {
-//      isLoading = true;
-//    });
 
     var url =
-        'https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=37.266389&lng=126.999333&m=1000';
+        'https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=$lat&lng=$lng&m=1000';
     var response = await http.get(url);
 
     final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
