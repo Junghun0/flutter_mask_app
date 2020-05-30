@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maskapp/model/store.dart';
 import 'package:maskapp/ui/widget/remain_stat_list_tile.dart';
 import 'package:maskapp/viewmodel/store_model.dart';
 import 'package:provider/provider.dart';
@@ -22,14 +23,33 @@ class MainPage extends StatelessWidget {
             )
           ],
         ),
-        body: storeModel.isLoading
-            ? loadingWidget()
-            : ListView(
-          children: storeModel.stores
-              .map((e) {
-            return RemainStatListTile(e);
-          }).toList(),
-        ));
+        body: _buildBody(storeModel)
+        );
+  }
+
+  Widget _buildBody(StoreModel storeModel) {
+    if (storeModel.isLoading == true) {
+      return loadingWidget();
+    }
+
+    if (storeModel.stores.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('5km 이내 재고가 있는 매장이 없습니다.'),
+            Text('또는 인터넷 연결이 되어있는지 확인 해주세요.'),
+          ],
+        ),
+      );
+    }
+
+    return ListView(
+        children: storeModel.stores
+        .map((e) {
+      return RemainStatListTile(e);
+    }).toList(),
+    );
   }
 
   Widget loadingWidget() {

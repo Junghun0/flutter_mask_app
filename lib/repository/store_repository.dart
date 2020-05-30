@@ -11,25 +11,33 @@ class StoreRepository {
 
     var url =
         'https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=$lat&lng=$lng&m=1000';
+    try {
     var response = await http.get(url);
 
-    final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
-    final jsonStores = jsonResult['stores'];
+    if (response.statusCode == 200) {
+      final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
+      final jsonStores = jsonResult['stores'];
 
-    jsonStores.forEach((e) {
-      final store = Store.fromJson(e);
-      final int meter =
-          _distance(new LatLng(store.lat, store.lng), new LatLng(lat, lng));
+      jsonStores.forEach((e) {
+        final store = Store.fromJson(e);
+        final int meter =
+        _distance(new LatLng(store.lat, store.lng), new LatLng(lat, lng));
 
-      store.meter = meter;
-      stores.add(store);
-    });
+        store.meter = meter;
+        stores.add(store);
+      });
 
-    return stores
-        .where((e) =>
-            e.remainStat == 'plenty' ||
-            e.remainStat == 'some' ||
-            e.remainStat == 'few')
-        .toList()..sort((a, b) => a.meter.compareTo(b.meter));
+      return stores
+          .where((e) =>
+      e.remainStat == 'plenty' ||
+          e.remainStat == 'some' ||
+          e.remainStat == 'few')
+          .toList()
+        ..sort((a, b) => a.meter.compareTo(b.meter));
+    } else {
+      return [];
+    } } catch(e) {
+      return [];
+    }
   }
 }
