@@ -11,7 +11,13 @@ class RemainStatListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(store.name),
-      subtitle: Text(store.addr),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(store.addr),
+          Text('${store.meter} m'),
+        ],
+      ),
       trailing: _buildRemainStateWidget(store),
       onTap: () {
         _launchURL(store.lat, store.lng);

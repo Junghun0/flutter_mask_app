@@ -8,6 +8,7 @@ class Store {
   String stockAt;
   String remainStat;
   String createdAt;
+  num meter;
 
   Store(
       {this.code,
